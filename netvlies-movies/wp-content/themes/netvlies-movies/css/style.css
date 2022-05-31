@@ -1,0 +1,18 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+div .movie-list {
+  background: whitesmoke;
+  margin: 10px;
+  padding: 10px;
+}
+div .movie-item {
+  margin: 10px;
+  padding: 10px;
+}
+
+p {
+  color: green !important;
+}
