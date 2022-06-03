@@ -9,34 +9,74 @@ function show_movies($atts = []) : string{
 
     $movies = mv_get_movie_list($show_movies_atts['post_count']);
 
-    $html = '<div class="movie-list">';
+    return loop_trough_movies_and_display($movies);
+}
 
-    if($movies->have_posts()){
-        while($movies->have_posts()){
-            
-            $movies->the_post();
+add_shortcode('mv_seach_movies', 'mv_search_filter');
 
-            $image_src = wp_get_attachment_image_src( get_post_thumbnail_id( $movies->post_ID )); 
+function mv_search_filter() : string{
+    global $post;
 
-            //gets the image url
-            if(is_array($image_src)){
-                $image_url = $image_src[0];
-            }
+    $categories = get_categories();
 
-            $html .= '<div class="movie-item">';
-            $html .= '<h5>' . get_the_title() . '</h5>';
+    $html = '<div class="search-form">
+                <form action="' . esc_url(get_the_permalink()) . '" method="POST">
+                    <div class="form-inputs">
+                        <div class="search-and-category">
+                            <input type="text" class="form-control" id="search" name="search" placeholder="Search Movies">        
+                            <select name="category" id="category">
+                                <option value="" selected>Select a category</option>';
+                                foreach ($categories as $category) {
+                                    $html .= '<option value="' . $category->name . '">' . $category->name . '</option>';
+                                }
+    $html .=              '</select>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>            
+                    </div>
+                </form>
+             </div>';
 
-            if(isset($image_url))
-                $html .=  '<img src=' . $image_url . '>';
-            
-            $html .= '<p>' . get_the_excerpt() . '</p>';
-            $html .= '<a href="' . get_the_permalink() . '">Read more</a>';
-            $html .= '</div>';
-        }
+    if(!empty($_POST['search']) || !empty($_POST['category'])){
+        $movies = get_movies_from_search($_POST['search'], $_POST['category']);
+    }else{
+        $movies = mv_get_movie_list();
     }
 
-    $html .= '</div>';
+    $html .= loop_trough_movies_and_display($movies);
 
+    return $html;
+}
+
+function loop_trough_movies_and_display(WP_Query $movies) : string{
+    $html = '<div class="movie-container">';
+    $html   .= '<div class="movie-list">';
+    while($movies->have_posts()){
+        $movies->the_post();
+
+        $image_src = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID()));
+
+        //gets the image url
+        if(is_array($image_src)){
+            $image_url = $image_src[0];
+        }
+        $html .= '<div class="card movie-item">';
+
+        if(isset($image_url)){
+            $html .= '<div class="image-container">';
+            $html .=  '<img class="img-top img-thumbnail rounded mx-auto movie-image" src=' . $image_url . '>';
+            $html .= '</div>';
+        }
+        $html .=    '<div class="card-body">';
+        $html .=        '<h5 class="card-title">' . get_the_title() . '</h5>';
+
+        $html .=        '<p class="card-text">' . get_the_excerpt() . '</p>';
+        $html .=        '<a class="btn btn-primary" href="' . get_the_permalink() . '">Read more</a>';
+        $html .=    '</div>';
+        $html .= '</div>';
+    }
+    $html .= '</div></div>';
     return $html;
 }
 

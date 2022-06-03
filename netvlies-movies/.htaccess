@@ -5,3 +5,16 @@
 # Any changes to the directives between these markers will be overwritten.
 
 # END WordPress
+
+
+<files wp-config.php>
+order allow,deny
+deny from all
+</files>
+
+
+<Files xmlrpc.php>
+ order deny,allow
+ deny from all
+ allow from 000.00.000.000
+</Files>

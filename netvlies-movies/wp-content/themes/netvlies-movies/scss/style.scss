@@ -1,22 +1,89 @@
-$colour: #f03;
+@use 'custom';
+
+$primary : map-get(custom.$theme-colors, 'primary');
+$column-count : 5;
+$content-width : 500px;
+
+$roboto : 'Roboto Condensed', sans-serif;
 
 *{
-  padding: 0;
-  margin: 0;
+  padding: 0 ;
+  margin: 0 ;
 }
 
-div{
-  .movie-list{
-    background: whitesmoke;
-    margin: 10px;
-    padding: 10px;
-  }
-  .movie-item{
-    margin: 10px;
-    padding: 10px;
-  }
+h1, h2, h5{
+  font-family: $roboto;
+  font-size: 2.5em;
+  font-weight: 300;
+  margin-bottom: 0.5em;
 }
 
 p{
-  color: green !important;
+  font-family: $roboto;
+  font-size: 1.0em;
+}
+
+.card{
+  min-height: 200px;
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 600px;
+  padding: 10px;
+}
+
+.movie-list{
+  display: grid;
+  grid-template-columns: repeat($column-count, 1fr);
+  padding: 20px;
+}
+
+.movie-item{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  max-width: $content-width;
+}
+
+.image-container{
+  height: 300px;
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+.movie-image{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.form-container{
+  flex-direction: column;
+
+  .search-form{
+    text-align: center;
+    margin-bottom: 20px;
+
+    .form-inputs{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      div{
+        margin: 10px;
+      }
+
+      .search-and-category{
+        display: flex;
+        flex-direction: row;
+      }
+    }
+  }
+
 }
