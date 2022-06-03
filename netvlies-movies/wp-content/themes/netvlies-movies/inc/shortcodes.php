@@ -20,7 +20,7 @@ function mv_search_filter() : string{
     $categories = get_categories();
 
     $html = '<div class="search-form">
-                <form action="' . esc_url(get_the_permalink()) . '" method="POST">
+                <form  action="' . esc_url(get_the_permalink()) . '" method="POST" >
                     <div class="form-inputs">
                         <div class="search-and-category">
                             <input type="text" class="form-control" id="search" name="search" placeholder="Search Movies">        
@@ -35,10 +35,12 @@ function mv_search_filter() : string{
                             <button type="submit" class="btn btn-primary">Search</button>
                         </div>            
                     </div>
+                    ' .  wp_nonce_field("search_movies", "search_movies_nonce") . ' 
                 </form>
              </div>';
 
-    if(!empty($_POST['search']) || !empty($_POST['category'])){
+
+    if(wp_verify_nonce($_POST['search_movies_nonce'], 'search_movies') && (!empty($_POST['search']) || !empty($_POST['category']))){
         $movies = get_movies_from_search($_POST['search'], $_POST['category']);
     }else{
         $movies = mv_get_movie_list();
