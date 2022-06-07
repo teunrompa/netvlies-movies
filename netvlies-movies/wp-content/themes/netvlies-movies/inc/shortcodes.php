@@ -39,8 +39,11 @@ function mv_search_filter() : string{
                 </form>
              </div>';
 
+    //Get the nonce and check if its valid
+    if(isset($_POST['search_movies_nonce']))
+        $nonce = wp_verify_nonce($_POST['search_movies_nonce'], 'search_movies');
 
-    if(wp_verify_nonce($_POST['search_movies_nonce'], 'search_movies') && (!empty($_POST['search']) || !empty($_POST['category']))){
+    if(!empty($nonce) && (!empty($_POST['search']) || !empty($_POST['category']))){
         $movies = get_movies_from_search($_POST['search'], $_POST['category']);
     }else{
         $movies = mv_get_movie_list();
@@ -51,35 +54,44 @@ function mv_search_filter() : string{
     return $html;
 }
 
-function loop_trough_movies_and_display(WP_Query $movies) : string{
-    $html = '<div class="movie-container">';
-    $html   .= '<div class="movie-list">';
-    while($movies->have_posts()){
-        $movies->the_post();
 
-        $image_src = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID()));
+add_shortcode('show_movie_detail', 'mv_display_single_movie');
 
-        //gets the image url
-        if(is_array($image_src)){
-            $image_url = $image_src[0];
-        }
-        $html .= '<div class="card movie-item">';
+function mv_display_single_movie(): string
+{
+    global $post;
 
-        if(isset($image_url)){
-            $html .= '<div class="image-container">';
-            $html .=  '<img class="img-top img-thumbnail rounded mx-auto movie-image" src=' . $image_url . '>';
-            $html .= '</div>';
-        }
-        $html .=    '<div class="card-body">';
-        $html .=        '<h5 class="card-title">' . get_the_title() . '</h5>';
+    $html =     '<div class="movie-container">';
+    $html .=        '<div >';
 
-        $html .=        '<p class="card-text">' . get_the_excerpt() . '</p>';
-        $html .=        '<a class="btn btn-primary" href="' . get_the_permalink() . '">Read more</a>';
-        $html .=    '</div>';
+    $image_src = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID()));
+
+    //gets the image url
+    if(is_array($image_src)){
+        $image_url = $image_src[0];
+    }
+
+    if(!empty($image_url)){
+        $html .= '<div class="image-container">';
+        $html .=    '<img class="movie-image card-img-top" src="' . $image_url . '" alt="' . get_the_title() . '">';
         $html .= '</div>';
     }
-    $html .= '</div></div>';
+
+    $html .=    '<div class="movie-content">';
+    $html .=                '<h5 >' . get_the_title() . '</h5>';
+    $html .=                '<div class="movie-excerpt">';
+    $html .=                    '<p >' . get_the_excerpt() . '</p>';
+    $html .=             '</div>';
+    $html .=                '<div class="movie-description">';
+    $html .=                    '<p >' . get_the_content() . '</p>';
+    $html .=                '</div>';
+    $html .=            '</div>';
+    $html .=        '</div>';
+    $html .=    '</div>';
+
     return $html;
 }
+
+
 
 ?>
