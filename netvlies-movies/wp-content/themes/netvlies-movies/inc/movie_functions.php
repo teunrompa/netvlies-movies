@@ -52,11 +52,19 @@ function get_movies_from_search(string $search, string $category) : WP_Query{
 function mv_get_movie_list(int $post_count = -1) : WP_Query{
     $args = array(
         'post_type' => 'movies',
-        'posts_per_page' => $post_count
+        'posts_per_page' => $post_count,
+        'orderby' => 'date',
     );
     return new WP_Query($args);
 }
 
+/**
+ * filter movie based on the category and the name
+ * @param string $category
+ * @param string $search
+ * @param int $post_count
+ * @return WP_Query
+ */
 function mv_get_movie_by_category_and_name( string $category, string $search ,int $post_count = -1) : WP_Query{
     $args = array(
         'post_type' => 'movies',

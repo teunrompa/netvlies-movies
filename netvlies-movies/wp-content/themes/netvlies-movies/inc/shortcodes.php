@@ -78,7 +78,7 @@ function mv_display_single_movie(): string
     }
 
     $html .=    '<div class="movie-content">';
-    $html .=                '<h5 >' . get_the_title() . '</h5>';
+    $html .=                '<h5>' . get_the_title() . '</h5>';
     $html .=                '<div class="movie-excerpt">';
     $html .=                    '<p >' . get_the_excerpt() . '</p>';
     $html .=             '</div>';
